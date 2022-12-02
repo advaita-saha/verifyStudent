@@ -55,4 +55,14 @@ describe("StudentVerify Contract Deploy Check", () => {
         expect(data[i].args.studentId).to.deep.equal(errorData[i]);
       }
     });
+
+    it("Should return 0 discrepency in data", async () => {
+      await contract.addMarks([1, 2, 3, 4, 5, 6],[100, 80, 30, 70, 90, 60]);
+      await contract.addScrutinyMarks([1, 2, 3, 4, 5, 6],[100, 80, 30, 70, 90, 60]);
+      const tx = await contract.checkIntegrity();
+      let receipt = await tx.wait();
+      let data = receipt.events[0].event;
+      console.log(data);
+      expect(data).to.equal("StudentDataVerified");
+    });
 });

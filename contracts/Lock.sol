@@ -13,7 +13,7 @@ contract StudentVerify {
     }
 
     event ErrorInStudentData(uint256 studentId, uint256 originalMarks, uint256 scrutinizerMarks);
-    event StudentDataVerfied();
+    event StudentDataVerified();
 
     function addMarks(uint256[] calldata _studentIds, uint256[] calldata _marksData) external {
         require(msg.sender == owner, "Only owner can add marks");
@@ -39,7 +39,7 @@ contract StudentVerify {
             }
         }
         if(!check){
-            emit StudentDataVerfied();
+            emit StudentDataVerified();
         }
     }
 

@@ -16,7 +16,7 @@ beforeEach( async () => {
 describe("StudentVerify Contract Deploy Check", () => {
     it("Deployment Test and About Us", async () => {
         expect(await contract.owner()).to.equal(accounts[0].address);
-      });
+    });
 
     it("Owner Check", async () => {
         expect(await contract.owner()).to.equal(accounts[0].address);
@@ -44,9 +44,15 @@ describe("StudentVerify Contract Deploy Check", () => {
     });
 
     it("Should return 1 discrepency in data", async () => {
-      await contract.addMarks([1, 2, 3, 4, 5, 6],[100, 80, 35, 70, 90, 60]);
+      await contract.addMarks([1, 2, 3, 4, 5, 6],[100, 80, 35, 75, 90, 60]);
       await contract.addScrutinyMarks([1, 2, 3, 4, 5, 6],[100, 80, 30, 70, 90, 60]);
-      const output = await contract.checkIntegrity();
-      console.log(output);
+      const tx = await contract.checkIntegrity();
+      let receipt = await tx.wait();
+      let data = (receipt.events?.filter((x) => {return x.event == "ErrorInStudentData"}));
+      let errorData = [3, 4];
+      for(let i=0; i<data.length; i++){
+        console.log("Error in studentId : ", (data[i].args.studentId.toNumber()));
+        expect(data[i].args.studentId).to.deep.equal(errorData[i]);
+      }
     });
 });

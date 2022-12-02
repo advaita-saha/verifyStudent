@@ -12,6 +12,9 @@ contract StudentVerify {
         owner = msg.sender;
     }
 
+    event ErrorInStudentData(uint256 studentId, uint256 originalMarks, uint256 scrutinizerMarks);
+    event StudentDataVerfied();
+
     function addMarks(uint256[] calldata _studentIds, uint256[] calldata _marksData) external {
         require(msg.sender == owner, "Only owner can add marks");
         for(uint256 i = 0; i < _studentIds.length; i++){
@@ -27,14 +30,17 @@ contract StudentVerify {
         }
     }
 
-    function checkIntegrity() external view returns(uint256[10] memory){
-        uint256[10] memory output;
+    function checkIntegrity() external {
+        bool check = false;
         for(uint256 i=0; i<studentIdData.length; i++){
             if(studentMarks[studentIdData[i]] != scrutinizerMarks[studentIdData[i]]){
-                output[i] = studentIdData[i];
+                check = true;
+                emit ErrorInStudentData(studentIdData[i], studentMarks[studentIdData[i]], scrutinizerMarks[studentIdData[i]]);
             }
         }
-        return output;
+        if(!check){
+            emit StudentDataVerfied();
+        }
     }
 
 
